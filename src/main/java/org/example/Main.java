@@ -1,6 +1,5 @@
 package org.example;
 
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +7,7 @@ import java.util.Scanner;
 
 public class Main {
 
+    // Define constants for database connection
     private static final String URL = "jdbc:mysql://localhost:3306/imsdb";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "root";
@@ -17,6 +17,7 @@ public class Main {
             Scanner scanner = new Scanner(System.in);
             boolean exit = false;
             while (!exit) {
+                // Display menu options
                 System.out.println("1: Insert a new student");
                 System.out.println("2: Update an existing student");
                 System.out.println("3: Delete a student");
@@ -26,6 +27,7 @@ public class Main {
                 int choice = scanner.nextInt();
                 switch (choice) {
                     case 1:
+                        // Prompt user to enter new student information
                         System.out.print("Enter the student name: ");
                         String name = scanner.next();
                         System.out.print("Enter the student email: ");
@@ -35,6 +37,7 @@ public class Main {
                         System.out.print("Enter the student major: ");
                         String major = scanner.next();
 
+                        // Prepare and execute SQL statement to insert new student
                         String insertSql = "INSERT INTO students (name, email, age, major) VALUES (?, ?, ?, ?)";
                         PreparedStatement insertStatement = connection.prepareStatement(insertSql);
                         insertStatement.setString(1, name);
@@ -51,6 +54,7 @@ public class Main {
                         break;
 
                     case 2:
+                        // Prompt user to enter updated student information
                         System.out.print("Enter the student ID to update: ");
                         int id = scanner.nextInt();
                         System.out.print("Enter the new student name: ");
@@ -62,6 +66,7 @@ public class Main {
                         System.out.print("Enter the new student major: ");
                         major = scanner.next();
 
+                        // Prepare and execute SQL statement to update existing student
                         String updateSql = "UPDATE students SET name = ?, email = ?, age = ?, major = ? WHERE id = ?";
                         PreparedStatement updateStatement = connection.prepareStatement(updateSql);
                         updateStatement.setString(1, name);
@@ -79,12 +84,15 @@ public class Main {
                         break;
 
                     case 3:
+                        // Prompt user to enter ID of student to delete
                         System.out.print("Enter the student ID to delete: ");
                         id = scanner.nextInt();
+                        // Prepare and execute SQL statement to delete student
                         String deleteSql = "DELETE FROM students WHERE id = ?";
                         PreparedStatement deleteStatement = connection.prepareStatement(deleteSql);
                         deleteStatement.setInt(1, id);
                         result = deleteStatement.executeUpdate();
+
                         if (result > 0) {
                             System.out.println("Student deleted successfully!");
                         } else {
@@ -92,7 +100,7 @@ public class Main {
                         }
                         deleteStatement.close();
                         break;
-
+                    // Display all existing student
                     case 4:
                         String selectSql = "SELECT * FROM students";
                         Statement selectStatement = connection.createStatement();
@@ -117,7 +125,7 @@ public class Main {
                             }
                         }
                         break;
-
+                    //Close app
                     case 5:
                         exit = true;
                         break;
@@ -128,6 +136,7 @@ public class Main {
                 }
             }
         } catch (SQLException e) {
+            //Show error messages
             System.out.println("Database error: " + e.getMessage());
         }
     }
