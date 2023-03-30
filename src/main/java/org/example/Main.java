@@ -1,5 +1,6 @@
 package org.example;
 
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,16 +8,20 @@ import java.util.Scanner;
 
 public class Main {
 
-    // Define constants for database connection
     private static final String URL = "jdbc:mysql://localhost:3306/imsdb";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "root";
 
     public static void main(String[] args) {
         try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD)) {
+
+            // Create a scanner to get user input
             Scanner scanner = new Scanner(System.in);
+
+            // Create a loop for the user menu
             boolean exit = false;
             while (!exit) {
+
                 // Display menu options
                 System.out.println("1: Insert a new student");
                 System.out.println("2: Update an existing student");
@@ -24,10 +29,15 @@ public class Main {
                 System.out.println("4: Display all students");
                 System.out.println("5: Exit");
                 System.out.print("Enter your choice: ");
+
+                // Get user choice
                 int choice = scanner.nextInt();
+
+                // Perform action based on user choice
                 switch (choice) {
+
+                    // Insert a new student
                     case 1:
-                        // Prompt user to enter new student information
                         System.out.print("Enter the student name: ");
                         String name = scanner.next();
                         System.out.print("Enter the student email: ");
@@ -37,7 +47,6 @@ public class Main {
                         System.out.print("Enter the student major: ");
                         String major = scanner.next();
 
-                        // Prepare and execute SQL statement to insert new student
                         String insertSql = "INSERT INTO students (name, email, age, major) VALUES (?, ?, ?, ?)";
                         PreparedStatement insertStatement = connection.prepareStatement(insertSql);
                         insertStatement.setString(1, name);
@@ -52,9 +61,8 @@ public class Main {
                         }
                         insertStatement.close();
                         break;
-
+                        // Update existing student
                     case 2:
-                        // Prompt user to enter updated student information
                         System.out.print("Enter the student ID to update: ");
                         int id = scanner.nextInt();
                         System.out.print("Enter the new student name: ");
@@ -66,7 +74,6 @@ public class Main {
                         System.out.print("Enter the new student major: ");
                         major = scanner.next();
 
-                        // Prepare and execute SQL statement to update existing student
                         String updateSql = "UPDATE students SET name = ?, email = ?, age = ?, major = ? WHERE id = ?";
                         PreparedStatement updateStatement = connection.prepareStatement(updateSql);
                         updateStatement.setString(1, name);
@@ -82,17 +89,15 @@ public class Main {
                         }
                         updateStatement.close();
                         break;
+                    // Delete existing student
 
                     case 3:
-                        // Prompt user to enter ID of student to delete
                         System.out.print("Enter the student ID to delete: ");
                         id = scanner.nextInt();
-                        // Prepare and execute SQL statement to delete student
                         String deleteSql = "DELETE FROM students WHERE id = ?";
                         PreparedStatement deleteStatement = connection.prepareStatement(deleteSql);
                         deleteStatement.setInt(1, id);
                         result = deleteStatement.executeUpdate();
-
                         if (result > 0) {
                             System.out.println("Student deleted successfully!");
                         } else {
